@@ -1,3 +1,4 @@
+# Modified by Agustín Yagüe
 name: CI
 on:
   push:
@@ -16,6 +17,7 @@ jobs:
       - name: ⬇️ Checkout repository
         uses: actions/checkout@v4
         with:
+          # si fuera valor 1 solo descarga el último commit.
           fetch-depth: 0
 
       - name: ☕ Set up Java
@@ -23,6 +25,7 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
+          # Guarda las dependencias en caché para acelerar los builds.
           cache: maven
 
       - name: 🏷️ Extract artifact from pom
@@ -35,6 +38,7 @@ jobs:
           queries: security-extended
 
       - name: ✅ Run Unit & Integration Test & Functional Test
+        # Orden: compile, test, package y verify. Lo hace en modo batch.
         run: mvn -B verify
 
       - name: 🔔 Notify Slack on failure
@@ -54,8 +58,8 @@ jobs:
       - name: 📊 Sonar Analysis
         run: >
           mvn -B sonar:sonar 
-          -Dsonar.projectKey=miw-upm-github_${{ env.ARTIFACT }}
-          -Dsonar.organization=miw-upm-github 
+          -Dsonar.projectKey=agustinyagueupm_${{ env.ARTIFACT }}
+          -Dsonar.organization=agustinyagueupm 
           -Dsonar.host.url=https://sonarcloud.io 
           -Dsonar.token=${{ secrets.SONAR_TOKEN }}
         env:
