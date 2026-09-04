@@ -2,7 +2,8 @@
 name: CI
 on:
   push:
-    branches: [develop,release-*]
+    branches: [develop,master,release-* ]
+    tags: [v*]
 
 jobs:
   devops:
